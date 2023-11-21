@@ -102,11 +102,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 5
-  speed: 0
+  speed: 7
   timeInvincible: 2
   projectilePrefab: {fileID: 3220972677661209250, guid: ff1c81e848e46bc40939ecaa3449fe07, type: 3}
   throwSound: {fileID: 8300000, guid: b2edfd40873655249ba0e01a5cf705be, type: 3}
   hitSound: {fileID: 8300000, guid: 9b1bb1f450b7d444fa4a8019d13519a7, type: 3}
+  ActiveInGame: 1
+  DamageParticle: {fileID: 1173452639835956822, guid: a584cd4eff1df37459099626604a6a3d, type: 3}
+  HealthPickupParticle: {fileID: 4528590509065578978, guid: 2655d204d53cc3944aab62c3974322d6, type: 3}
 --- !u!50 &5775953652748827985
 Rigidbody2D:
   serializedVersion: 4

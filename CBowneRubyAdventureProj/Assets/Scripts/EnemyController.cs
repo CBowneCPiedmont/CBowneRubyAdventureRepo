@@ -23,6 +23,7 @@ public class EnemyController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+        UIGoalCounter.instance.AddRobot();
     }
     
     void Update()
@@ -72,10 +73,12 @@ public class EnemyController : MonoBehaviour
     //Public because we want to call it from elsewhere like the projectile script
     public void Fix()
     {
+        if(!broken) return;
         broken = false;
         rigidbody2D.simulated = false;
         animator.SetTrigger("Fixed");
         smokeEffect.Stop();
         GetComponent<AudioSource>().Stop();
+        UIGoalCounter.instance.FixRobot();
     }
 }
