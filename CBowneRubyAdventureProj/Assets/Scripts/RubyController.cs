@@ -32,6 +32,7 @@ public class RubyController : Singleton<RubyController>
     [SerializeField] ParticleSystem DamageParticle;
     [SerializeField] ParticleSystem HealthPickupParticle;
     [SerializeField] bool requireEndToRestart;
+    
 
     
     void Start()
@@ -54,7 +55,11 @@ public class RubyController : Singleton<RubyController>
     {
         move.x = Input.GetAxis("Horizontal"); 
         move.y = Input.GetAxis("Vertical");
-    	if (Input.GetKeyDown(KeyCode.C)) Launch();
+        
+        if(mouseBasedLaunching) MouseUpdate(); //Added Mouse-based Launch setup.
+        else if (Input.GetKeyDown(KeyCode.C)) Launch(Muzzle.position, lookDirection); 
+        if(mouseBasedLaunching!=mouseElementsShown)ShowHideMouseElements(mouseBasedLaunching);
+        
         if (Input.GetKeyDown(KeyCode.X)) Interact();
         if (Input.GetKeyDown(KeyCode.R)) UIEnding.instance.Restart(requireEndToRestart);
         if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
@@ -81,9 +86,6 @@ public class RubyController : Singleton<RubyController>
         }
     }
     
-    
-    
-
     void FixedUpdate()
     {
         if(!ActiveInGame) return;
@@ -93,7 +95,7 @@ public class RubyController : Singleton<RubyController>
         ));
     }
     
-
+    
     public bool ChangeHealth(int amount)
     {
         if(amount == 0) return false;
@@ -116,13 +118,45 @@ public class RubyController : Singleton<RubyController>
         return true;
     }
     
-    void Launch()
+    
+    //
+    // CODE CHANGE 1. (CJ)
+    //
+    //Added Mouse-based Aiming system.
+    //Other minor code changes to work with this system made in Update() and Launch().
+    public Transform Target;
+    public Transform Muzzle;
+    [SerializeField] bool mouseBasedLaunching; //Change this bool to toggle Mouse Based Launching.
+    bool mouseElementsShown = true;
+    
+    void MouseUpdate()
+    {
+    	if(!ActiveInGame) return;
+        
+        Target.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + Vector3.forward*10;
+        Target.Rotate(0, 0, 1.5f);
+        
+        Vector2 direction = Target.position - transform.position;
+        Muzzle.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        if(Input.GetMouseButtonDown(0)) Launch(Muzzle.position, direction.normalized);
+    
+    }
+
+    void ShowHideMouseElements(bool show)
+    {
+    	Muzzle.GetChild(0).GetComponent<SpriteRenderer>().enabled = show;
+        Target.GetComponent<SpriteRenderer>().enabled = show;
+        mouseElementsShown = show;
+    }
+    // END OF CODE CHANGE 1. (CJ)
+    
+    void Launch(Vector2 origin, Vector2 direction) //Refactored this function to take in a position and direction.
     {
         if(!ActiveInGame) return;
-        GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2D.position + Vector2.up * 0.5f, Quaternion.identity);
+        GameObject projectileObject = Instantiate(projectilePrefab, origin, Quaternion.identity);
         
         Projectile projectile = projectileObject.GetComponent<Projectile>();
-        projectile.Launch(lookDirection, 300);
+        projectile.Launch(direction, 300);
         
         animator.SetTrigger("Launch");
         PlaySound(throwSound);
@@ -152,4 +186,5 @@ public class RubyController : Singleton<RubyController>
     	speed = 0;
         ActiveInGame = false;
     }
+    public void ChangeSpeed(int value){speed = value;}
 }

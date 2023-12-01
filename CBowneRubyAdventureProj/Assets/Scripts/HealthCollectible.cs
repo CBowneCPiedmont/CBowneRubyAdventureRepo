@@ -14,6 +14,7 @@ public class HealthCollectible : MonoBehaviour
         if (controller != null)
         {
             if(controller.ChangeHealth(1) == false) return;
+            controller.ChangeSpeed(7);
             Destroy(gameObject);
             controller.PlaySound(collectedClip);
         }
