@@ -186,5 +186,5 @@ public class RubyController : Singleton<RubyController>
     	speed = 0;
         ActiveInGame = false;
     }
-    public void ChangeSpeed(int value){speed = value;}
+    public void ChangeSpeed(int value){speed = value;} //Fabiana Code Change
 }
