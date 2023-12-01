@@ -14,7 +14,7 @@ public class HealthCollectible : MonoBehaviour
         if (controller != null)
         {
             if(controller.ChangeHealth(1) == false) return;
-            controller.ChangeSpeed(7);
+            controller.ChangeSpeed(7); //Fabiana Code Change
             Destroy(gameObject);
             controller.PlaySound(collectedClip);
         }
